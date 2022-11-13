@@ -1,0 +1,13 @@
+{
+  "name": "which-bin",
+  "version": "0.0.1",
+  "description": "A waste segregation app",
+  "main": "index.js",
+  "repository": "https://github.com/xmile1/whichbin",
+  "author": "Uyiosa <hiskonxeptz@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
