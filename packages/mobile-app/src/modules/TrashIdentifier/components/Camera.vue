@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { imageClassifier } from "@/@common/services/image-classifier";
 import { nextTick, onMounted, reactive, ref } from "vue";
+import { useTrashIdentifierStore } from "../store";
+
+const store = useTrashIdentifierStore();
 
 const state = reactive({
   isPhotoTaken: false,
@@ -8,17 +11,17 @@ const state = reactive({
     width: 0,
     height: 0,
   },
-  predictions: [] as any,
+  predictions: "None" as any,
 });
 
 onMounted(async () => {
   let video = document.querySelector("#video") as any;
 
-  const devices = await navigator.mediaDevices.enumerateDevices();
-
   let stream = await navigator.mediaDevices.getUserMedia({
     video: {
       facingMode: "environment",
+      width: { min: 1024, ideal: 1280, max: 1920 },
+      height: { min: 576, ideal: 720, max: 1080 },
     },
     audio: false,
   });
@@ -27,32 +30,28 @@ onMounted(async () => {
 });
 
 const onImageCapture = async () => {
+  store.isPhotoTaken = true;
   let camera = document.querySelector("#camera-feed") as any;
 
   state.cameraSize.width = camera.clientWidth;
   state.cameraSize.height = camera.clientHeight;
-  console.log("video", camera.clientWidth, camera.clientHeight);
   await nextTick();
-  state.isPhotoTaken = true;
   let canvas = document.querySelector("#canvas") as any;
   let video = document.querySelector("#video") as any;
 
   canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  state.predictions = await imageClassifier.classify(canvas);
-  console.log("predictions", state.predictions);
+  store.predict(canvas);
 };
 </script>
 
 <template>
-  <div>{{ state.predictions }}dddd</div>
   <canvas
     :width="state.cameraSize.width"
     :height="state.cameraSize.height"
-    v-show="state.isPhotoTaken"
+    v-show="store.isPhotoTaken"
     id="canvas"
   ></canvas>
-  <div id="camera-feed" v-show="!state.isPhotoTaken">
+  <div id="camera-feed" v-show="!store.isPhotoTaken">
     <video ref="camera" id="video" autoplay></video>
 
     <v-btn @click="onImageCapture" class="mx-2" fab dark color="indigo">
@@ -64,11 +63,7 @@ const onImageCapture = async () => {
 <style scoped>
 #video {
   width: 100vw;
-}
-
-canvas {
-  /* width: 100vw; */
-  /* height: 100vh; */
+  overflow: hidden;
 }
 
 button {

@@ -4,10 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue + TS</title>
+    <meta
+      name="description"
+      content="Predict the waste bin category to trash an item"
+    />
+    <title>Which bin</title>
   </head>
   <body>
     <div id="app"></div>
+    <!-- Import @tensorflow/tfjs-core -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <!-- Adds the CPU backend -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu"></script> -->
+    <!--
+    Note that we need to explicitly load dist/tf-tflite.min.js so that it can
+    locate WASM module files from their default location (dist/).
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite/dist/tf-tflite.min.js"></script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
